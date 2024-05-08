@@ -1,24 +1,24 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// ƒQ[ƒ€‘S‘Ì‚ğŠÇ—‚·‚éƒNƒ‰ƒX.
-/// ƒLƒ…[ƒu‚ğì‚èo‚µAƒ{ƒ^ƒ“ƒNƒŠƒbƒN‚É‰‚¶‚ÄƒLƒ…[ƒu‚ğ‰ñ“]‚³‚¹‚é.
+/// ã‚²ãƒ¼ãƒ å…¨ä½“ã‚’ç®¡ç†ã™ã‚‹ã‚¯ãƒ©ã‚¹.
+/// ã‚­ãƒ¥ãƒ¼ãƒ–ã‚’ä½œã‚Šå‡ºã—ã€ãƒœã‚¿ãƒ³ã‚¯ãƒªãƒƒã‚¯ã«å¿œã˜ã¦ã‚­ãƒ¥ãƒ¼ãƒ–ã‚’å›è»¢ã•ã›ã‚‹.
 /// </summary>
 public class GameManager : MonoBehaviour
 {
-    /// ƒLƒ…[ƒu‚ÌƒvƒŒƒnƒu.
+    /// ã‚­ãƒ¥ãƒ¼ãƒ–ã®ãƒ—ãƒ¬ãƒãƒ–.
     public GameObject cubePrefab;
 
-    /// ì¬‚µ‚½ƒLƒ…[ƒu.
+    /// ä½œæˆã—ãŸã‚­ãƒ¥ãƒ¼ãƒ–.
     private Cube cube;
 
     void Start()
     {
-        // ƒvƒŒƒnƒu‚©‚çƒLƒ…[ƒu‚ğì¬‚·‚é.CubeViewƒNƒ‰ƒX‚Í‰ñ“]‚Ìw¦‚É—˜—p‚·‚é.
+        // ãƒ—ãƒ¬ãƒãƒ–ã‹ã‚‰ã‚­ãƒ¥ãƒ¼ãƒ–ã‚’ä½œæˆã™ã‚‹.CubeViewã‚¯ãƒ©ã‚¹ã¯å›è»¢ã®æŒ‡ç¤ºã«åˆ©ç”¨ã™ã‚‹.
         cube = Instantiate(cubePrefab).GetComponent<Cube>();
     }
 
-    // -------- ƒ{ƒ^ƒ“ƒNƒŠƒbƒN‚Ì“®ì. --------
+    // -------- ãƒœã‚¿ãƒ³ã‚¯ãƒªãƒƒã‚¯æ™‚ã®å‹•ä½œ. --------
 
     public void OnClickRotateR() { if (cube != null) cube.Rotate(Operations.R); }
     public void OnClickRotateL() { if (cube != null) cube.Rotate(Operations.L); }

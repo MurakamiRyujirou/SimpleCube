@@ -1,26 +1,26 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-/// �L���[�u���\������u���b�N(�L���[�r�[)�̃N���X.
-/// ���݂̉�]�����Ȃǂ��ێ��ł���悤�Ɋg������Ɨǂ�.
+/// キューブを構成するブロック(キュービー)のクラス.
+/// 現在の回転向きなども保持できるように拡張すると良い.
 public class Cubie : MonoBehaviour
 {
-    /// �U�ʂɒ���t����p�l���̃v���n�u.
+    /// ６面に張り付けるパネルのプレハブ.
     public GameObject panelPrefab;
 
-    /// �p�l���ɐݒ肷��F�ݒ�(�}�e���A��).
+    /// パネルに設定する色設定(マテリアル).
     public Material[] materials;
 
-    /// ���݃L���[�r�[���ʒu������W.0�`2�̒l���Ƃ�.
+    /// 現在キュービーが位置する座標.0～2の値をとる.
     public int X, Y, Z;
 
-    /// �L���[�r�[�������̏���.
+    /// キュービー生成時の処理.
     void Start()
     {
-        // �U�ʂɃp�l���𐶐����ĐF(�}�e���A��)��ݒ肷��.
+        // ６面にパネルを生成して色(マテリアル)を設定する.
         for (int i = 0; i < 6; i++)
         {
-            Vector3 pos = positions[i]; // ���W.
-            Quaternion rot = rotations[i]; // ��]����.
+            Vector3 pos = positions[i]; // 座標.
+            Quaternion rot = rotations[i]; // 回転向き.
             GameObject panel = Instantiate(panelPrefab, transform);
             panel.transform.localPosition = pos;
             panel.transform.localRotation = rot;
@@ -28,7 +28,7 @@ public class Cubie : MonoBehaviour
         }
     }
 
-    /// �p�l���̈ʒu���(�E->��->��->��->��->�O�̏���).
+    /// パネルの位置情報(右->左->上->下->奥->前の順番).
     private readonly Vector3[] positions = new Vector3[]
     {
         new Vector3( 0.51f,  0.00f,  0.00f),
@@ -39,7 +39,7 @@ public class Cubie : MonoBehaviour
         new Vector3( 0.00f,  0.00f, -0.51f)
     };
 
-    /// �p�l���̌������(�E->��->��->��->��->�O�̏���).
+    /// パネルの向き情報(右->左->上->下->奥->前の順番).
     private readonly Quaternion[] rotations = new Quaternion[]
     {
         Quaternion.Euler(new Vector3(  0f,  0f,-90f)),

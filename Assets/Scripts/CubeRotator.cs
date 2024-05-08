@@ -1,72 +1,72 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
-/// ƒLƒ…[ƒu‚Ì‰ñ“]‘€ì‚ğ’S“–‚·‚éƒNƒ‰ƒX.
-/// u‚±‚ê‚ğ‰ñ‚µ‚È‚³‚¢v‚Æw¦‚³‚ê‚é‚Ì‚ÅA‚»‚ê‚É]‚Á‚ÄRotateAround‚ğ‚·‚é‚¾‚¯.
+/// ã‚­ãƒ¥ãƒ¼ãƒ–ã®å›è»¢æ“ä½œã‚’æ‹…å½“ã™ã‚‹ã‚¯ãƒ©ã‚¹.
+/// ã€Œã“ã‚Œã‚’å›ã—ãªã•ã„ã€ã¨æŒ‡ç¤ºã•ã‚Œã‚‹ã®ã§ã€ãã‚Œã«å¾“ã£ã¦RotateAroundã‚’ã™ã‚‹ã ã‘.
 public class CubeRotator : MonoBehaviour
 {
-    // ‰ñ“]Š®—¹‚É’Ê’m‚ğ‚·‚é‹@”\.
+    // å›è»¢å®Œäº†æ™‚ã«é€šçŸ¥ã‚’ã™ã‚‹æ©Ÿèƒ½.
     public delegate void OnCompleteRotate(Operations oper, bool isOperationDone);
     public OnCompleteRotate completeRotate;
 
-    /// Œ»İ‰ñ“]‚µ‚Ä‚¢‚éƒLƒ…[ƒr[‚ÌƒŠƒXƒg.
+    /// ç¾åœ¨å›è»¢ã—ã¦ã„ã‚‹ã‚­ãƒ¥ãƒ¼ãƒ“ãƒ¼ã®ãƒªã‚¹ãƒˆ.
     private List<Transform> rotateCubies = new();
 
-    /// Œ»İs‚È‚Á‚Ä‚¢‚é‰ñ“]‘€ì.
+    /// ç¾åœ¨è¡Œãªã£ã¦ã„ã‚‹å›è»¢æ“ä½œ.
     public Operations CurrentOperation { get; private set; }
 
-    /// Œ»İ‰ñ“]‘€ì’†‚©”Û‚©‚Ìó‘Ô‚ğ•Û‚·‚éƒu[ƒ‹’l.
+    /// ç¾åœ¨å›è»¢æ“ä½œä¸­ã‹å¦ã‹ã®çŠ¶æ…‹ã‚’ä¿æŒã™ã‚‹ãƒ–ãƒ¼ãƒ«å€¤.
     public bool IsRotating { get; private set; } = false;
 
-    /// Œ»İ‰ñ“]’†‚ÌƒLƒ…[ƒr[‚Ì‰ñ“]—Ê.0f‚©‚ç90f or 180f‚Æ‚È‚é.
-    /// Œü‚«‚ğ_dir‚Å•Û‚·‚é‚Ì‚ÅA-90f‚È‚Çƒ}ƒCƒiƒX‚Ì’l‚Í‚½‚È‚¢‚±‚Æ‚Æ‚·‚é.
+    /// ç¾åœ¨å›è»¢ä¸­ã®ã‚­ãƒ¥ãƒ¼ãƒ“ãƒ¼ã®å›è»¢é‡.0fã‹ã‚‰90f or 180fã¨ãªã‚‹.
+    /// å‘ãã‚’_dirã§ä¿æŒã™ã‚‹ã®ã§ã€-90fãªã©ãƒã‚¤ãƒŠã‚¹ã®å€¤ã¯æŒãŸãªã„ã“ã¨ã¨ã™ã‚‹.
     public float Angle { get; private set; } = 0f;
 
-    /// Œ»İs‚È‚Á‚Ä‚¢‚é‰ñ“]‚Ì‰ñ“]ƒXƒs[ƒh.
+    /// ç¾åœ¨è¡Œãªã£ã¦ã„ã‚‹å›è»¢ã®å›è»¢ã‚¹ãƒ”ãƒ¼ãƒ‰.
     public float RotateSpeed = 10f;
 
-    /// Œ»İ‚Ì‰ñ“]‘€ì‚Å‚Ì‰ñ“]—Ê‚ÌÅ‘å90f or 180f‚Æ‚È‚é.
+    /// ç¾åœ¨ã®å›è»¢æ“ä½œã§ã®å›è»¢é‡ã®æœ€å¤§90f or 180fã¨ãªã‚‹.
     private float angleMax = 90f;
 
-    /// Œ»İs‚È‚Á‚Ä‚¢‚é‰ñ“]‚ÌA‰ñ“]Œü‚«(+1,-1‚Ì‚¢‚¸‚ê‚©).
+    /// ç¾åœ¨è¡Œãªã£ã¦ã„ã‚‹å›è»¢ã®ã€å›è»¢å‘ã(+1,-1ã®ã„ãšã‚Œã‹).
     private float dir = 0f;
 
-    /// ‰ñ“]‘€ì‚ğs‚¤‚½‚ß‚Ìİ’è‚ğ‚·‚é.
-    /// <param name="cubies">‰ñ“]‚·‚éƒLƒ…[ƒr[‚ÌƒŠƒXƒg.</param>
-    /// <param name="oper">‰ñ“]‘€ì.</param>
+    /// å›è»¢æ“ä½œã‚’è¡Œã†ãŸã‚ã®è¨­å®šã‚’ã™ã‚‹.
+    /// <param name="cubies">å›è»¢ã™ã‚‹ã‚­ãƒ¥ãƒ¼ãƒ“ãƒ¼ã®ãƒªã‚¹ãƒˆ.</param>
+    /// <param name="oper">å›è»¢æ“ä½œ.</param>
     public bool Rotate(Transform[] cubies, Operations oper)
     {
-        // ‰ñ“]’†‚É‚ÍŸ‚Ì‰ñ“]‚Ís‚í‚È‚¢.
+        // å›è»¢ä¸­ã«ã¯æ¬¡ã®å›è»¢ã¯è¡Œã‚ãªã„.
         if (IsRotating) return false;
 
-        // V‚½‚És‚¤‰ñ“]—p‚É‰ñ“]‘ÎÛ‚ÌTransform‚ğŠi”[‚·‚éƒŠƒXƒg‚ğ‰Šú‰».
+        // æ–°ãŸã«è¡Œã†å›è»¢ç”¨ã«å›è»¢å¯¾è±¡ã®Transformã‚’æ ¼ç´ã™ã‚‹ãƒªã‚¹ãƒˆã‚’åˆæœŸåŒ–.
         rotateCubies = new List<Transform>();
         foreach (Transform cubie in cubies)
         {
             rotateCubies.Add(cubie);
         }
-        CurrentOperation = oper;   // ‚±‚ê‚©‚çs‚¤‰ñ“]‘€ì‚ğ‹L˜^.
-        IsRotating = true;         // ‰ñ“]’†‚ÌƒXƒe[ƒ^ƒX‚É•ÏX.
-        Angle = 0f;                // Œ»İ‚Ì‰ñ“]—Ê‚ğƒŠƒZƒbƒg.
-        angleMax = 90f;            // ‰ñ“]‚ÌÅ‘å’l‚ğƒZƒbƒg.
-        dir = Direction(oper);     // ‰ñ“]Œü‚«‚ğæ“¾.
+        CurrentOperation = oper;   // ã“ã‚Œã‹ã‚‰è¡Œã†å›è»¢æ“ä½œã‚’è¨˜éŒ².
+        IsRotating = true;         // å›è»¢ä¸­ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã«å¤‰æ›´.
+        Angle = 0f;                // ç¾åœ¨ã®å›è»¢é‡ã‚’ãƒªã‚»ãƒƒãƒˆ.
+        angleMax = 90f;            // å›è»¢ã®æœ€å¤§å€¤ã‚’ã‚»ãƒƒãƒˆ.
+        dir = Direction(oper);     // å›è»¢å‘ãã‚’å–å¾—.
         return true;
     }
 
-    /// XVˆ—.
+    /// æ›´æ–°å‡¦ç†.
     public void OnUpdate()
     {
         if (IsRotating)
             RotateAround();
     }
 
-    /// ‰ñ“]‘€ì‚ÌƒLƒ…[ƒu‚ª“®‚­ˆ—•”•ª.
+    /// å›è»¢æ“ä½œã®ã‚­ãƒ¥ãƒ¼ãƒ–ãŒå‹•ãå‡¦ç†éƒ¨åˆ†.
     private void RotateAround()
     {
-        // ¡‰ñ‚ÌƒtƒŒ[ƒ€‚Å“’B‚·‚é‰ñ“]Šp“x.
+        // ä»Šå›ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã§åˆ°é”ã™ã‚‹å›è»¢è§’åº¦.
         float target;
 
-        // ¡‰ñ‚ÌƒtƒŒ[ƒ€‚Å‰ñ“]‚ªI—¹‚·‚é‚©(90/180“x‰ñ‚Á‚½‚©)”»’f‚·‚é.
+        // ä»Šå›ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã§å›è»¢ãŒçµ‚äº†ã™ã‚‹ã‹(90/180åº¦å›ã£ãŸã‹)åˆ¤æ–­ã™ã‚‹.
         bool rotateDone = Angle + RotateSpeed >= angleMax;
         if (rotateDone)
         {
@@ -79,18 +79,18 @@ public class CubeRotator : MonoBehaviour
             Angle += RotateSpeed;
         }
 
-        // ŠeƒLƒ…[ƒr[‚ğ‰ñ“]‚³‚¹‚é.
+        // å„ã‚­ãƒ¥ãƒ¼ãƒ“ãƒ¼ã‚’å›è»¢ã•ã›ã‚‹.
         foreach (Transform cubie in rotateCubies)
         {
-            // •W€‹@”\‚ÌRotateAround‚ğŒÄ‚Ño‚·.
-            // GetAxis‚Å‰ñ“]²‚ğæ“¾‚·‚é‚ªAƒvƒ‰ƒXƒ}ƒCƒiƒXl—¶‚ª–Ê“|‚È‚Ì‚ÅX,Y,Z‚Ì‚¢‚¸‚ê‚©‚Rí‚Æ‚µ‚½.speed‚Í‰ñ“]—Ê.
-            // dir‚Í‰ñ“]‚ÌŒü‚«i³•‰‚Ì•„†j‚Å‚ ‚è‰ñ“]‘€ìŠJn‚ÉDirection‚ÅŒvZ‚·‚é.
-            // [’ˆÓ]GetAxis‚ÍƒLƒ…[ƒu‘S‘Ì‚ÌŒü‚«‚ğ•ÏX‚·‚é“®‚«‚ªs‚í‚ê‚½‚Æ‚«‚É²‚ğŒvZ‚µ’¼‚·•K—v‚ª‚ ‚é‚Ì‚Å“s“xŒvZ‚Æ‚·‚é.
+            // æ¨™æº–æ©Ÿèƒ½ã®RotateAroundã‚’å‘¼ã³å‡ºã™.
+            // GetAxisã§å›è»¢è»¸ã‚’å–å¾—ã™ã‚‹ãŒã€ãƒ—ãƒ©ã‚¹ãƒã‚¤ãƒŠã‚¹è€ƒæ…®ãŒé¢å€’ãªã®ã§X,Y,Zã®ã„ãšã‚Œã‹ï¼“ç¨®ã¨ã—ãŸ.speedã¯å›è»¢é‡.
+            // dirã¯å›è»¢ã®å‘ãï¼ˆæ­£è² ã®ç¬¦å·ï¼‰ã§ã‚ã‚Šå›è»¢æ“ä½œé–‹å§‹æ™‚ã«Directionã§è¨ˆç®—ã™ã‚‹.
+            // [æ³¨æ„]GetAxisã¯ã‚­ãƒ¥ãƒ¼ãƒ–å…¨ä½“ã®å‘ãã‚’å¤‰æ›´ã™ã‚‹å‹•ããŒè¡Œã‚ã‚ŒãŸã¨ãã«è»¸ã‚’è¨ˆç®—ã—ç›´ã™å¿…è¦ãŒã‚ã‚‹ã®ã§éƒ½åº¦è¨ˆç®—ã¨ã™ã‚‹.
             Vector3 axis = GetAxis(CurrentOperation);
             cubie.RotateAround(transform.position, axis, target * dir);
         }
 
-        // ¡‰ñ‚ÌƒtƒŒ[ƒ€‚Å‰ñ“]I—¹‚Å‚ ‚ê‚ÎisRotating‚Ìó‘Ô‚ğ•Ï‰»‚³‚¹‚é.
+        // ä»Šå›ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã§å›è»¢çµ‚äº†ã§ã‚ã‚Œã°isRotatingã®çŠ¶æ…‹ã‚’å¤‰åŒ–ã•ã›ã‚‹.
         if (rotateDone)
         {
             IsRotating = false;
@@ -98,7 +98,7 @@ public class CubeRotator : MonoBehaviour
         }
     }
 
-    /// ‰ñ“]²‚Æ‚È‚éVector3‚Ì’l‚ğæ“¾‚·‚é.Cube‚²‚Æ‰ñ“]‚³‚¹‚Ä‚à³‚µ‚­æ“¾‚Å‚«‚é‚æ‚¤‚Étransform‚©‚çæ“¾‚µ‚Ä‚¢‚é.
+    /// å›è»¢è»¸ã¨ãªã‚‹Vector3ã®å€¤ã‚’å–å¾—ã™ã‚‹.Cubeã”ã¨å›è»¢ã•ã›ã¦ã‚‚æ­£ã—ãå–å¾—ã§ãã‚‹ã‚ˆã†ã«transformã‹ã‚‰å–å¾—ã—ã¦ã„ã‚‹.
     private Vector3 GetAxis(Operations currentOperation)
     {
         if (currentOperation == Operations.R || currentOperation == Operations.L) return transform.right;
@@ -107,7 +107,7 @@ public class CubeRotator : MonoBehaviour
         return Vector3.zero;
     }
 
-    /// ‰ñ“]²‚É‘Î‚µ‚Ä³•‰‚Ç‚¿‚ç‚Ì•ûŒü‚É‰ñ“]‚³‚¹‚é‚©‚ğæ“¾‚·‚é.
+    /// å›è»¢è»¸ã«å¯¾ã—ã¦æ­£è² ã©ã¡ã‚‰ã®æ–¹å‘ã«å›è»¢ã•ã›ã‚‹ã‹ã‚’å–å¾—ã™ã‚‹.
     private float Direction(Operations currentOperation)
     {
         if (currentOperation == Operations.R) return 1f;
