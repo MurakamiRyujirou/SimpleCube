@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+using System;
+using UnityEngine;
 
 /// キューブを構成するブロック(キュービー)のクラス.
 /// 現在の回転向きなども保持できるように拡張すると良い.
@@ -13,6 +14,10 @@ public class Cubie : MonoBehaviour
     /// 現在キュービーが位置する座標.0～2の値をとる.
     public int X, Y, Z;
 
+    /// ６面の色情報.
+    /// 2024.5.18 CubeConverterで利用するために新設.
+    public PanelColors[] colors;
+
     /// キュービー生成時の処理.
     void Start()
     {
@@ -25,6 +30,9 @@ public class Cubie : MonoBehaviour
             panel.transform.localPosition = pos;
             panel.transform.localRotation = rot;
             panel.GetComponent<MeshRenderer>().material = materials[i];
+
+            /// 2024.5.18 色情報を格納する.
+            colors[i] = (PanelColors)Enum.ToObject(typeof(PanelColors), i);
         }
     }
 
@@ -50,4 +58,63 @@ public class Cubie : MonoBehaviour
         Quaternion.Euler(new Vector3(-90f,  0f,  0f))
     };
 
+    /// 2024.5.18 CubeConverterで利用するために新設.
+    public PanelColors GetColor(Faces face)
+    {
+        return colors[(int)face];
+    }
+
+    /// 2024.5.18 回転操作を行った際に各面の色が切り替わる処理を追加.
+    public void Rotate(Operations oper)
+    {
+        if (oper == Operations.R)
+        {
+            // 上面→背面→下面→手前→上面と色を入れ替える.
+            PanelColors tmp = colors[(int)Faces.UP];
+            colors[(int)Faces.UP] = colors[(int)Faces.FRONT];
+            colors[(int)Faces.FRONT] = colors[(int)Faces.DOWN];
+            colors[(int)Faces.DOWN] = colors[(int)Faces.BACK];
+            colors[(int)Faces.BACK] = tmp;
+        }
+        if (oper == Operations.L || oper == Operations.M)
+        {
+            PanelColors tmp = colors[(int)Faces.UP];
+            colors[(int)Faces.UP] = colors[(int)Faces.BACK];
+            colors[(int)Faces.BACK] = colors[(int)Faces.DOWN];
+            colors[(int)Faces.DOWN] = colors[(int)Faces.FRONT];
+            colors[(int)Faces.FRONT] = tmp;
+        }
+        if (oper == Operations.U)
+        {
+            PanelColors tmp = colors[(int)Faces.FRONT];
+            colors[(int)Faces.FRONT] = colors[(int)Faces.RIGHT];
+            colors[(int)Faces.RIGHT] = colors[(int)Faces.BACK];
+            colors[(int)Faces.BACK] = colors[(int)Faces.LEFT];
+            colors[(int)Faces.LEFT] = tmp;
+        }
+        if (oper == Operations.D)
+        {
+            PanelColors tmp = colors[(int)Faces.FRONT];
+            colors[(int)Faces.FRONT] = colors[(int)Faces.LEFT];
+            colors[(int)Faces.LEFT] = colors[(int)Faces.BACK];
+            colors[(int)Faces.BACK] = colors[(int)Faces.RIGHT];
+            colors[(int)Faces.RIGHT] = tmp;
+        }
+        if (oper == Operations.F)
+        {
+            PanelColors tmp = colors[(int)Faces.UP];
+            colors[(int)Faces.UP] = colors[(int)Faces.LEFT];
+            colors[(int)Faces.LEFT] = colors[(int)Faces.DOWN];
+            colors[(int)Faces.DOWN] = colors[(int)Faces.RIGHT];
+            colors[(int)Faces.RIGHT] = tmp;
+        }
+        if (oper == Operations.B)
+        {
+            PanelColors tmp = colors[(int)Faces.UP];
+            colors[(int)Faces.UP] = colors[(int)Faces.RIGHT];
+            colors[(int)Faces.RIGHT] = colors[(int)Faces.DOWN];
+            colors[(int)Faces.DOWN] = colors[(int)Faces.LEFT];
+            colors[(int)Faces.LEFT] = tmp;
+        }
+    }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+using System;
+using UnityEngine;
 
 /// キューブクラス.
 /// 27(=3x3x3)サイズの配列にキュービーを持つ.
@@ -113,18 +114,14 @@ public class Cube : MonoBehaviour
                 for (y = 0; y < 3; y++)
                     ret[x * 3 + y] = GetCubie(x, y, z).gameObject.transform;
         }
-        return ret;
-    }
-
-    /// 回転操作に対して、動かすべきキュービー1個を取得する.
-    private Cubie GetCubie(int x, int y, int z)
-    {
-        foreach (Cubie cubie in Cubies)
+        else if (oper == Operations.M)
         {
-            if (cubie.X == x && cubie.Y == y && cubie.Z == z)
-                return cubie;
+            x = 1;
+            for (y = 0; y < 3; y++)
+                for (z = 0; z < 3; z++)
+                    ret[y * 3 + z] = GetCubie(x, y, z).gameObject.transform;
         }
-        return null;
+        return ret;
     }
 
     /// キューブの回転操作を担当するクラスが90度ちょうど回転が終わったら呼び出される.
@@ -154,6 +151,16 @@ public class Cube : MonoBehaviour
                 RB.Z = 1; RB.Y = 0; 
                 RU.Y = 1; RU.Z = 2;
                 RF.Z = 1; RF.Y = 2;
+                // 各パーツの向きを90度回転させる.
+                RDF.Rotate(oper);
+                RDB.Rotate(oper);
+                RUB.Rotate(oper);
+                RUF.Rotate(oper);
+                RD.Rotate(oper);
+                RB.Rotate(oper);
+                RU.Rotate(oper);
+                RF.Rotate(oper);
+                GetCubie(2, 1, 1).Rotate(oper);
             }
             if (oper == Operations.L)
             {
@@ -173,6 +180,16 @@ public class Cube : MonoBehaviour
                 LB.Z = 1; LB.Y = 2;
                 LU.Y = 1; LU.Z = 0;
                 LF.Z = 1; LF.Y = 0;
+                // 各パーツの向きを90度回転させる.
+                LDF.Rotate(oper);
+                LUF.Rotate(oper);
+                LUB.Rotate(oper);
+                LDB.Rotate(oper);
+                LD.Rotate(oper);
+                LB.Rotate(oper);
+                LU.Rotate(oper);
+                LF.Rotate(oper);
+                GetCubie(0, 1, 1).Rotate(oper);
             }
             if (oper == Operations.U)
             {
@@ -192,6 +209,16 @@ public class Cube : MonoBehaviour
                 UR.X = 1; UR.Z = 0;
                 UF.X = 0; UF.Z = 1;
                 UL.X = 1; UL.Z = 2;
+                // 各パーツの向きを90度回転させる.
+                ULF.Rotate(oper);
+                ULB.Rotate(oper);
+                URB.Rotate(oper);
+                URF.Rotate(oper);
+                UB.Rotate(oper);
+                UR.Rotate(oper);
+                UF.Rotate(oper);
+                UL.Rotate(oper);
+                GetCubie(1, 2, 1).Rotate(oper);
             }
             if (oper == Operations.D)
             {
@@ -211,6 +238,16 @@ public class Cube : MonoBehaviour
                 DR.X = 1; DR.Z = 2;
                 DF.X = 2; DF.Z = 1;
                 DL.X = 1; DL.Z = 0;
+                // 各パーツの向きを90度回転させる.
+                DLF.Rotate(oper);
+                DLB.Rotate(oper);
+                DRB.Rotate(oper);
+                DRF.Rotate(oper);
+                DB.Rotate(oper);
+                DR.Rotate(oper);
+                DF.Rotate(oper);
+                DL.Rotate(oper);
+                GetCubie(1, 0, 1).Rotate(oper);
             }
             if (oper == Operations.B)
             {
@@ -230,6 +267,16 @@ public class Cube : MonoBehaviour
                 BR.X = 1; BR.Y = 2;
                 BD.X = 2; BD.Y = 1;
                 BL.X = 1; BL.Y = 0;
+                // 各パーツの向きを90度回転させる.
+                BLD.Rotate(oper);
+                BLU.Rotate(oper);
+                BRU.Rotate(oper);
+                BRD.Rotate(oper);
+                BU.Rotate(oper);
+                BR.Rotate(oper);
+                BD.Rotate(oper);
+                BL.Rotate(oper);
+                GetCubie(1, 1, 2).Rotate(oper);
             }
             if (oper == Operations.F)
             {
@@ -249,7 +296,61 @@ public class Cube : MonoBehaviour
                 FR.X = 1; FR.Y = 0;
                 FD.X = 0; FD.Y = 1;
                 FL.X = 1; FL.Y = 2;
+                // 各パーツの向きを90度回転させる.
+                FLD.Rotate(oper);
+                FLU.Rotate(oper);
+                FRU.Rotate(oper);
+                FRD.Rotate(oper);
+                FU.Rotate(oper);
+                FR.Rotate(oper);
+                FD.Rotate(oper);
+                FL.Rotate(oper);
+                GetCubie(1, 1, 0).Rotate(oper);
+            }
+            if (oper == Operations.M)
+            {
+                Cubie FD = GetCubie(1, 0, 0);
+                Cubie BD = GetCubie(1, 0, 2);
+                Cubie BU = GetCubie(1, 2, 2);
+                Cubie FU = GetCubie(1, 2, 0);
+                FD.Z = 2;
+                BD.Y = 2;
+                BU.Z = 0;
+                FU.Y = 0;
+                Cubie F = GetCubie(1, 1, 0);
+                Cubie D = GetCubie(1, 0, 1);
+                Cubie B = GetCubie(1, 1, 2);
+                Cubie U = GetCubie(1, 2, 1);
+                F.Y = 0; F.Z = 1;
+                D.Y = 1; D.Z = 2;
+                B.Y = 2; B.Z = 1;
+                U.Y = 1; U.Z = 0;
+                // 各パーツの向きを90度回転させる.
+                FD.Rotate(oper);
+                BD.Rotate(oper);
+                BU.Rotate(oper);
+                FU.Rotate(oper);
+                F.Rotate(oper);
+                B.Rotate(oper);
+                U.Rotate(oper);
+                D.Rotate(oper);
+                // 実際のルービックキューブには中心にCubieはないけど、
+                // 本プログラムでは存在しているので一応回転しておく(見えることはないけど)
+                GetCubie(1, 1, 1).Rotate(oper);
             }
         }
     }
+
+    /// 回転操作に対して、動かすべきキュービー1個を取得する.
+    /// 2024.5.18 CubeConverterで利用するためにprivateからpublicに修正.
+    public Cubie GetCubie(int x, int y, int z)
+    {
+        foreach (Cubie cubie in Cubies)
+        {
+            if (cubie.X == x && cubie.Y == y && cubie.Z == z)
+                return cubie;
+        }
+        return null;
+    }
+
 }

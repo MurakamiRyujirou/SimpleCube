@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// キューブの回転操作を担当するクラス.
@@ -101,7 +101,7 @@ public class CubeRotator : MonoBehaviour
     /// 回転軸となるVector3の値を取得する.Cubeごと回転させても正しく取得できるようにtransformから取得している.
     private Vector3 GetAxis(Operations currentOperation)
     {
-        if (currentOperation == Operations.R || currentOperation == Operations.L) return transform.right;
+        if (currentOperation == Operations.R || currentOperation == Operations.L || currentOperation == Operations.M) return transform.right;
         if (currentOperation == Operations.U || currentOperation == Operations.D) return transform.up;
         if (currentOperation == Operations.B || currentOperation == Operations.F) return transform.forward;
         return Vector3.zero;
@@ -116,6 +116,7 @@ public class CubeRotator : MonoBehaviour
         if (currentOperation == Operations.D) return -1f;
         if (currentOperation == Operations.B) return 1f;
         if (currentOperation == Operations.F) return -1f;
+        if (currentOperation == Operations.M) return -1f;
         return 0f;
     }
 }
